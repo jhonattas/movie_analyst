@@ -26,13 +26,6 @@ app.get('/authorized', function (req, res) {
   res.send('Secured Resource');
 });
 
-// caso nao utilize as credenciais corretamente, retornara a mensagem apropriada
-app.use(function(err, req, res, next) {
-    if(err.name === "UnauthorizedError") {
-        res.status(401).json({message: 'Missing or invalid token'});
-    }
-});
-
 var guard = function(req, res, next){
     switch(req.path){
         case '/movies' : {
@@ -86,6 +79,14 @@ var guard = function(req, res, next){
 }
 
 app.use(guard);
+
+// caso nao utilize as credenciais corretamente, retornara a mensagem apropriada
+app.use(function(err, req, res, next) {
+    console.log(err.name);
+    if(err.name === "UnauthorizedError") {
+        res.status(401).json({message: 'Missing or invalid token'});
+    }
+});
 
 // rotas
 // implementa o endpoint da API de filmes
